@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+<xacro:macro name="rail" params="prefix *origin parent child " >
+
+    <xacro:property name="rail_size_x" value="5.0" />
+    <xacro:property name="rail_size_y" value="0.25" />
+    <xacro:property name="rail_size_z" value="0.1" />
+    <xacro:property name="rail_mass" value="100" />
+
+    <xacro:property name="platform_size_x" value="0.15" />
+    <xacro:property name="platform_size_y" value="0.15" />
+    <xacro:property name="platform_size_z" value="0.025" />
+    <xacro:property name="platform_mass" value="2" />
+
+    <!-- Rail Link-->
+    <link name="${prefix}rail_link">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <box size="${rail_size_x} ${rail_size_y} ${rail_size_z}" />
+            </geometry>
+        </visual>
+        
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <box size="${rail_size_x} ${rail_size_y} ${rail_size_z}" />
+            </geometry>
+        </collision>
+
+        <inertial>
+            <mass value="${rail_mass}"/>
+            <origin xyz="0 0 0"/>
+            <inertia 
+            ixx="${(rail_mass * (rail_size_y*rail_size_y + rail_size_z*rail_size_z)) / 12.0}" 
+            iyy="${(rail_mass * (rail_size_x*rail_size_x + rail_size_z*rail_size_z)) / 12.0}" 
+            izz="${(rail_mass * (rail_size_x*rail_size_x + rail_size_y*rail_size_y)) / 12.0}" 
+            ixy="0" 
+            ixz="0" 
+            iyz="0" />
+        </inertial>
+    </link>
+
+    <!-- Platform Link-->
+    <link name="${prefix}base_platform_link">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <box size="${platform_size_x} ${platform_size_y} ${platform_size_z}" />
+            </geometry>
+        </visual>
+        
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <box size="${platform_size_x} ${platform_size_y} ${platform_size_z}" />
+            </geometry>
+        </collision>
+
+        <inertial>
+            <mass value="${platform_mass}"/>
+            <origin xyz="0 0 0"/>
+            <inertia 
+            ixx="${(platform_mass * (platform_size_y*platform_size_y + platform_size_z*platform_size_z)) / 12.0}" 
+            iyy="${(platform_mass * (platform_size_x*platform_size_x + platform_size_z*platform_size_z)) / 12.0}" 
+            izz="${(platform_mass * (platform_size_x*platform_size_x + platform_size_y*platform_size_y)) / 12.0}" 
+            ixy="0" 
+            ixz="0" 
+            iyz="0" />
+        </inertial>
+    </link>
+
+    <!-- Rail Joint-->
+    <joint name="${prefix}rail_joint" type="prismatic">
+        <origin xyz="0 0 ${rail_size_z/2 + platform_size_z/2 + 0.01}" rpy = "0.0 0.0 0.0"/>
+        <parent link="${prefix}rail_link"/>
+        <child link="${prefix}base_platform_link"/>
+        <axis xyz="1 0 0 "/>
+        <limit lower="${-1*rail_size_x/2}" upper="${rail_size_x/2}" effort="100" velocity="1.0"/>
+    </joint>
+
+    <joint name="${prefix}platform_joint" type="fixed">
+        <origin xyz="0 0 ${platform_size_z/2 + 0.01}" rpy = "0.0 0.0 0.0"/>
+        <parent link="${prefix}base_platform_link"/>
+        <child link="${child}"/>
+    </joint>
+
+    <joint name="${prefix}rail_base_fixed_joint" type="fixed">
+        <xacro:insert_block name="origin" />
+        <parent link="${parent}"/>
+        <child link="${prefix}rail_link"/>
+    </joint>
+
+ </xacro:macro>
+ </robot>

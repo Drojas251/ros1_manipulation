@@ -1,0 +1,13 @@
+<launch>
+
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find my_robot_description)/urdf/my_robot.urdf.xacro' " />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />
+
+  <arg name="gui" default="true" />
+  <param name="use_gui" value="$(arg gui)"/>
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+
+  <arg name="rviz_file" value="$(find my_robot_description)/config/my_robot.rviz"/>
+  <node name="$(anon rviz)" pkg="rviz" type="rviz" respawn="false" output="screen" args="-d $(arg rviz_file)" />
+
+</launch>
