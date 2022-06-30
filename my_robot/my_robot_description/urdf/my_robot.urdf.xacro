@@ -30,4 +30,13 @@
     <origin xyz="0 0 0.05" rpy="0 0 0" />  
   </xacro:rail>
 
+  <!--Floor-->
+  <xacro:include filename="$(find my_robot_description)/urdf/floor.xacro" />
+  <xacro:floor prefix="" parent="world" >
+    <origin xyz="0 -0.85 0" rpy="0 0 0" />  
+  </xacro:floor>
+
+  <!--Materials-->
+  <xacro:include filename="$(find my_robot_description)/urdf/materials.xacro" />
+
 </robot>

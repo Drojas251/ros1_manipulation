@@ -19,6 +19,7 @@
             <geometry>
                 <box size="${rail_size_x} ${rail_size_y} ${rail_size_z}" />
             </geometry>
+            <material name="grey"/>
         </visual>
         
         <collision>
@@ -48,6 +49,7 @@
             <geometry>
                 <box size="${platform_size_x} ${platform_size_y} ${platform_size_z}" />
             </geometry>
+            <material name="dark_grey"/>
         </visual>
         
         <collision>
@@ -76,7 +78,7 @@
         <parent link="${prefix}rail_link"/>
         <child link="${prefix}base_platform_link"/>
         <axis xyz="1 0 0 "/>
-        <limit lower="${-1*rail_size_x/2}" upper="${rail_size_x/2}" effort="100" velocity="1.0"/>
+        <limit lower="${-1*rail_size_x/2}" upper="${rail_size_x/2}" effort="1000" velocity="2.0"/>
     </joint>
 
     <joint name="${prefix}platform_joint" type="fixed">

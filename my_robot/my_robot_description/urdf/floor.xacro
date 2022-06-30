@@ -1,0 +1,234 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+<xacro:macro name="floor" params="prefix *origin parent " >
+
+    <xacro:property name="block_size_x" value="0.25" />
+    <xacro:property name="block_size_y" value="0.25" />
+    <xacro:property name="block_size_z" value="0.05" />
+    <xacro:property name="block_mass" value="2" />
+
+    <xacro:property name="floor_size_x" value="5.0" />
+    <xacro:property name="floor_size_y" value="0.5" />
+    <xacro:property name="floor_size_z" value="0.005" />
+    <xacro:property name="floor_mass" value="2" />
+
+    <!-- Floor-->
+    <link name="${prefix}floor_link">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <box size="${floor_size_x} ${floor_size_y} ${floor_size_z}" />
+            </geometry>
+            <material name="white"/>
+        </visual>
+        
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <box size="${floor_size_x} ${floor_size_y} ${floor_size_z}" />
+            </geometry>
+        </collision>
+
+        <inertial>
+            <mass value="${floor_mass}"/>
+            <origin xyz="0 0 0"/>
+            <inertia 
+            ixx="${(floor_mass * (floor_size_y*floor_size_y + floor_size_z*floor_size_z)) / 12.0}" 
+            iyy="${(floor_mass * (floor_size_x*floor_size_x + floor_size_z*floor_size_z)) / 12.0}" 
+            izz="${(floor_mass * (floor_size_x*floor_size_x + floor_size_y*floor_size_y)) / 12.0}" 
+            ixy="0" 
+            ixz="0" 
+            iyz="0" />
+        </inertial>
+    </link>
+
+    <!-- Block 1 Link-->
+    <link name="${prefix}block_1_link">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <box size="${block_size_x} ${block_size_y} ${block_size_z}" />
+            </geometry>
+            <material name="blue"/>
+        </visual>
+        
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <box size="${block_size_x} ${block_size_y} ${block_size_z}" />
+            </geometry>
+        </collision>
+
+        <inertial>
+            <mass value="${block_mass}"/>
+            <origin xyz="0 0 0"/>
+            <inertia 
+            ixx="${(block_mass * (block_size_y*block_size_y + block_size_z*block_size_z)) / 12.0}" 
+            iyy="${(block_mass * (block_size_x*block_size_x + block_size_z*block_size_z)) / 12.0}" 
+            izz="${(block_mass * (block_size_x*block_size_x + block_size_y*block_size_y)) / 12.0}" 
+            ixy="0" 
+            ixz="0" 
+            iyz="0" />
+        </inertial>
+    </link>
+
+    <!-- Block 2 Link-->
+    <link name="${prefix}block_2_link">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <box size="${block_size_x} ${block_size_y} ${block_size_z}" />
+            </geometry>
+            <material name="red"/>
+        </visual>
+        
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <box size="${block_size_x} ${block_size_y} ${block_size_z}" />
+            </geometry>
+        </collision>
+
+        <inertial>
+            <mass value="${block_mass}"/>
+            <origin xyz="0 0 0"/>
+            <inertia 
+            ixx="${(block_mass * (block_size_y*block_size_y + block_size_z*block_size_z)) / 12.0}" 
+            iyy="${(block_mass * (block_size_x*block_size_x + block_size_z*block_size_z)) / 12.0}" 
+            izz="${(block_mass * (block_size_x*block_size_x + block_size_y*block_size_y)) / 12.0}" 
+            ixy="0" 
+            ixz="0" 
+            iyz="0" />
+        </inertial>
+    </link>
+
+    <!-- Block 3 Link-->
+    <link name="${prefix}block_3_link">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <box size="${block_size_x} ${block_size_y} ${block_size_z}" />
+            </geometry>
+            <material name="green"/>
+        </visual>
+        
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <box size="${block_size_x} ${block_size_y} ${block_size_z}" />
+            </geometry>
+        </collision>
+
+        <inertial>
+            <mass value="${block_mass}"/>
+            <origin xyz="0 0 0"/>
+            <inertia 
+            ixx="${(block_mass * (block_size_y*block_size_y + block_size_z*block_size_z)) / 12.0}" 
+            iyy="${(block_mass * (block_size_x*block_size_x + block_size_z*block_size_z)) / 12.0}" 
+            izz="${(block_mass * (block_size_x*block_size_x + block_size_y*block_size_y)) / 12.0}" 
+            ixy="0" 
+            ixz="0" 
+            iyz="0" />
+        </inertial>
+    </link>
+
+    <!-- Block 4 Link-->
+    <link name="${prefix}block_4_link">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <box size="${block_size_x} ${block_size_y} ${block_size_z}" />
+            </geometry>
+            <material name="purple"/>
+        </visual>
+        
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <box size="${block_size_x} ${block_size_y} ${block_size_z}" />
+            </geometry>
+        </collision>
+
+        <inertial>
+            <mass value="${block_mass}"/>
+            <origin xyz="0 0 0"/>
+            <inertia 
+            ixx="${(block_mass * (block_size_y*block_size_y + block_size_z*block_size_z)) / 12.0}" 
+            iyy="${(block_mass * (block_size_x*block_size_x + block_size_z*block_size_z)) / 12.0}" 
+            izz="${(block_mass * (block_size_x*block_size_x + block_size_y*block_size_y)) / 12.0}" 
+            ixy="0" 
+            ixz="0" 
+            iyz="0" />
+        </inertial>
+    </link>
+
+    <!-- Block 5 Link-->
+    <link name="${prefix}block_5_link">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <box size="${block_size_x} ${block_size_y} ${block_size_z}" />
+            </geometry>
+            <material name="yellow"/>
+        </visual>
+        
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <box size="${block_size_x} ${block_size_y} ${block_size_z}" />
+            </geometry>
+        </collision>
+
+        <inertial>
+            <mass value="${block_mass}"/>
+            <origin xyz="0 0 0"/>
+            <inertia 
+            ixx="${(block_mass * (block_size_y*block_size_y + block_size_z*block_size_z)) / 12.0}" 
+            iyy="${(block_mass * (block_size_x*block_size_x + block_size_z*block_size_z)) / 12.0}" 
+            izz="${(block_mass * (block_size_x*block_size_x + block_size_y*block_size_y)) / 12.0}" 
+            ixy="0" 
+            ixz="0" 
+            iyz="0" />
+        </inertial>
+    </link>
+
+    <!-- Joints-->
+
+    <joint name="${prefix}block_1_joint" type="fixed">
+        <origin xyz="0 0 ${block_size_z/2 + 0.01}" rpy = "0.0 0.0 0.0"/>
+        <child link="${prefix}block_1_link"/>
+        <parent link="${prefix}floor_link"/>
+    </joint>
+
+    <joint name="${prefix}block_2_joint" type="fixed">
+        <origin xyz="-1.0 0 ${block_size_z/2 + 0.01}" rpy = "0.0 0.0 0.0"/>
+        <child link="${prefix}block_2_link"/>
+        <parent link="${prefix}floor_link"/>
+    </joint>
+
+    <joint name="${prefix}block_3_joint" type="fixed">
+        <origin xyz="1.0 0 ${block_size_z/2 + 0.01}" rpy = "0.0 0.0 0.0"/>
+        <child link="${prefix}block_3_link"/>
+        <parent link="${prefix}floor_link"/>
+    </joint>
+
+    <joint name="${prefix}block_4_joint" type="fixed">
+        <origin xyz="2.0 0 ${block_size_z/2 + 0.01}" rpy = "0.0 0.0 0.0"/>
+        <child link="${prefix}block_4_link"/>
+        <parent link="${prefix}floor_link"/>
+    </joint>
+
+    <joint name="${prefix}block_5_joint" type="fixed">
+        <origin xyz="-2.0 0 ${block_size_z/2 + 0.01}" rpy = "0.0 0.0 0.0"/>
+        <child link="${prefix}block_5_link"/>
+        <parent link="${prefix}floor_link"/>
+    </joint>
+
+    <joint name="${prefix}floor_fixed_joint" type="fixed">
+        <xacro:insert_block name="origin" />
+        <parent link="${parent}"/>
+        <child link="${prefix}floor_link"/>
+    </joint>
+
+ </xacro:macro>
+ </robot>

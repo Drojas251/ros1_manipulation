@@ -1,0 +1,4 @@
+name,x_size,y_size,z_size,color,location
+red_cube,0.05,0.05,0.05,red,1
+green_cube,0.075,0.075,0.075,green,2
+blue_cube,0.025,0.025,0.025,green,3
