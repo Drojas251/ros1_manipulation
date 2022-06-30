@@ -20,6 +20,7 @@ find_package(catkin REQUIRED
 add_action_files(
   FILES
   MoveRail.action
+  PickPlaceObj.action
 )
 
 generate_messages(

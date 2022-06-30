@@ -5,7 +5,6 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /MotionPlanning1/Scene Robot1
-        - /MotionPlanning1/Planning Request1
         - /TF1/Frames1
       Splitter Ratio: 0.7425600290298462
     Tree Height: 265
@@ -170,7 +169,7 @@ Visualization Manager:
         Robot Alpha: 0.5
         Robot Color: 150; 50; 150
         Show Robot Collision: false
-        Show Robot Visual: true
+        Show Robot Visual: false
         Show Trail: false
         State Display Time: 0.05 s
         Trail Step Size: 1
@@ -309,48 +308,10 @@ Visualization Manager:
       Value: true
       Velocity_Scaling_Factor: 1
     - Class: rviz/TF
-      Enabled: true
+      Enabled: false
       Frame Timeout: 15
       Frames:
         All Enabled: false
-        base:
-          Value: false
-        base_link:
-          Value: false
-        base_platform_link:
-          Value: false
-        block_1_link:
-          Value: false
-        block_2_link:
-          Value: false
-        block_3_link:
-          Value: false
-        block_4_link:
-          Value: false
-        block_5_link:
-          Value: false
-        ee_link:
-          Value: true
-        floor_link:
-          Value: false
-        forearm_link:
-          Value: false
-        rail_link:
-          Value: false
-        shoulder_link:
-          Value: false
-        tool0:
-          Value: false
-        upper_arm_link:
-          Value: false
-        world:
-          Value: true
-        wrist_1_link:
-          Value: false
-        wrist_2_link:
-          Value: false
-        wrist_3_link:
-          Value: false
       Marker Alpha: 1
       Marker Scale: 1
       Name: TF
@@ -358,35 +319,9 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        world:
-          floor_link:
-            block_1_link:
-              {}
-            block_2_link:
-              {}
-            block_3_link:
-              {}
-            block_4_link:
-              {}
-            block_5_link:
-              {}
-          rail_link:
-            base_platform_link:
-              base_link:
-                base:
-                  {}
-                shoulder_link:
-                  upper_arm_link:
-                    forearm_link:
-                      wrist_1_link:
-                        wrist_2_link:
-                          wrist_3_link:
-                            ee_link:
-                              {}
-                            tool0:
-                              {}
+        {}
       Update Interval: 0
-      Value: true
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -403,7 +338,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/XYOrbit
-      Distance: 4.078433036804199
+      Distance: 3.3684182167053223
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -411,17 +346,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: -0.06532347202301025
-        Y: -2.2805652618408203
-        Z: -5.513423957381747e-07
+        X: 0.0242154598236084
+        Y: -1.1230685710906982
+        Z: -4.321331061873934e-07
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.33979713916778564
+      Pitch: 0.1597975492477417
       Target Frame: world
-      Yaw: 4.664988040924072
+      Yaw: 4.640006065368652
     Saved: ~
 Window Geometry:
   Displays:
