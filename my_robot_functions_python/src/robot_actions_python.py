@@ -100,6 +100,8 @@ class ManipulationFunctions:
             status = self.MoveRail(ee_pose.position.x + 0.1)
             if(status):
                 status = self.MoveArmToPose(ee_pose)
+            else:
+                print("MoveToPose Execution Failed")
 
         else:
             status = self.MoveArmToPose(ee_pose)
@@ -109,8 +111,6 @@ class ManipulationFunctions:
     def MoveArmToPose(self,ee_pose):
         # Moves to a defined Pose
         function_name = "MoveArmToPose"
-
-        current_pose = self.arm.get_current_pose()
 
         #ee_pose.orientation = current_pose.pose.orientation # remove this later when we solve for orientaiton
 
@@ -174,9 +174,10 @@ class ManipulationFunctions:
         obj_pos.position.z = obj_pos.position.z + 2*obj_hieght
         print(obj_name + ": PRE-GRASP")
         self.MoveToPose(obj_pos)
+        print(obj_pos)
 
         # grasp
-        obj_pos.position.z = obj_pos.position.z - obj_hieght
+        obj_pos.position.z = obj_pos.position.z - obj_hieght - obj_hieght/3
         print(obj_name + ": GRASP")
         self.MoveToPose(obj_pos)
         self.grasp_obj(obj_name)
@@ -186,9 +187,8 @@ class ManipulationFunctions:
         print(obj_name + ": PICK-UP")
         self.MoveToPose(obj_pos)
 
-        place_pose = self.find_pose_from_databae(location_name)
+        place_pose = self.find_location_from_database(location_name)
         place_pose.orientation = obj_pos.orientation
-
 
         # pre-place
         place_pose.position.z = obj_pos.position.z 
@@ -199,8 +199,8 @@ class ManipulationFunctions:
         place_pose.position.z = obj_pos.position.z - obj_hieght 
         print(obj_name + ": PLACE")
         status = self.MoveToPose(place_pose)
+        self.release_obj(obj_name)
         if(status):
-            self.release_obj(obj_name)
             self.update_obj_database(obj_name, location_name)
 
         # re-treat
@@ -266,72 +266,13 @@ class ManipulationFunctions:
         return success 
 
     # INTERFACE TO DATABASE
-    def update_obj_database(self,obj_name,location_name):
-        for obj in self.obj_database_data:
-            if obj[0] == obj_name:
-                 obj[4] = location_name
-
-    def get_obj_pose(self,obj_name):
-        obj_pose = geometry_msgs.msg.Pose()
-        found_obj = False
-
-        for obj in self.obj_database_data:
-            if obj[0] == obj_name:
-                 obj_pose = self.find_pose_from_databae(obj[4])
-
-                 # replace with method to get orientation
-                 ee_pose = self.arm.get_current_pose()
-                 obj_pose.orientation = ee_pose.pose.orientation
-                 obj_pose.position.z =  obj_pose.position.z + float(obj[3])/2 
-
-                 found_obj = True
-                 break
-        if(found_obj):
-            return obj_pose
-        else:
-            print("OBJ NOT FOUND")
-            current_pose = self.arm.get_current_pose()
-            return current_pose.pose
-
-    def get_obj_hieght(self,obj_name):
-        found_obj = False
-
-        for obj in self.obj_database_data:
-            if obj[0] == obj_name:
-                 obj_hieght = float(obj[3])
-                 found_obj = True
-                 break
-        if(found_obj):
-            return obj_hieght
-        else:
-            print("OBJ NOT FOUND")
-            obj_hieght = 0.05
-            return obj_hieght
-
-    def find_pose_from_databae(self,location_name):
-        position = geometry_msgs.msg.Pose()
-        loc_found = False
-
-        for pos in self.obj_location_data:
-            if pos[0] == location_name:
-                position.position.x = float(pos[1])
-                position.position.y = float(pos[2])
-                position.position.z = float(pos[3])
-
-                loc_found = True
-                break
-
-        if(loc_found == False):
-            print("Location Not Found")
-        
-        return position
-
     def initialize_objs(self):
 
         # read csv files
         obj_database = csv.reader(self.obj_database)
         obj_location = csv.reader(self.obj_location)
 
+        # get the headers for the two csv files
         header = []
         header = next(obj_database)
         header = next(obj_location)
@@ -343,6 +284,7 @@ class ManipulationFunctions:
         for row in obj_location:
                 self.obj_location_data.append(row)
 
+        # Check if object is in scene already
         for obj in self.obj_database_data:
             is_known = obj[0] in self.scene.get_known_object_names()
             if(is_known):
@@ -351,12 +293,7 @@ class ManipulationFunctions:
 
             # add object
             self.add_obj(obj[0])
-            rospy.sleep(2.0)
-
-    def clear_scene(self):
-        for obj in self.obj_database_data:
-            self.scene.remove_world_object(obj[0])
-            rospy.sleep(2.0)
+            rospy.sleep(1.0)
 
     def add_obj(self,name):
         object_name = name
@@ -390,27 +327,86 @@ class ManipulationFunctions:
             print("Object Name Not Found")    
 
         if(position_found == False):
-            print("Object Position Not Found")    
+            print("Object Position Not Found")
 
+    def find_location_from_database(self,location_name):
+        position = geometry_msgs.msg.Pose()
+        loc_found = False
 
+        for pos in self.obj_location_data:
+            if pos[0] == location_name:
+                position.position.x = float(pos[1])
+                position.position.y = float(pos[2])
+                position.position.z = float(pos[3])
+
+                loc_found = True
+                break
+
+        if(loc_found == False):
+            print("Location Not Found")
+        
+        return position
+
+    def get_obj_pose(self,obj_name):
+        obj_pose = geometry_msgs.msg.Pose()
+        found_obj = False
+
+        for obj in self.obj_database_data:
+            if obj[0] == obj_name:
+                 obj_pose = self.find_location_from_database(obj[4])
+
+                 # replace with method to get orientation
+                 ee_pose = self.arm.get_current_pose()
+                 obj_pose.orientation = ee_pose.pose.orientation
+                 obj_pose.position.z =  obj_pose.position.z + float(obj[3])/2 
+
+                 found_obj = True
+                 break
+        if(found_obj):
+            return obj_pose
+        else:
+            print("OBJ NOT FOUND")
+            current_pose = self.arm.get_current_pose()
+            return current_pose.pose
+
+    def get_obj_hieght(self,obj_name):
+        found_obj = False
+
+        for obj in self.obj_database_data:
+            if obj[0] == obj_name:
+                 obj_hieght = float(obj[3])
+                 found_obj = True
+                 break
+        if(found_obj):
+            return obj_hieght
+        else:
+            print("OBJ NOT FOUND")
+            obj_hieght = 0.05
+            return obj_hieght
+
+    def update_obj_database(self,obj_name,location_name):
+        for obj in self.obj_database_data:
+            if obj[0] == obj_name:
+                 obj[4] = location_name
+
+        
 if __name__ == "__main__":
     rospy.loginfo("Grasp Manipulator On ...")
     my_robot = ManipulationFunctions()
 
     rospy.sleep(5.0)
-
     my_robot.initialize_objs()
     print("Robot is Ready")
 
     # rospy.sleep(5.0)
 
-    # my_robot.PickPlaceObj("small","green")
+    my_robot.PickPlaceObj("small","green")
 
-    # rospy.sleep(5.0)
+    # rospy.sleep(1.0)
 
-    # my_robot.PickPlaceObj("large",1)
+    # my_robot.PickPlaceObj("large","blue")
 
-
+    print("Done")
 
     rospy.spin()
 
