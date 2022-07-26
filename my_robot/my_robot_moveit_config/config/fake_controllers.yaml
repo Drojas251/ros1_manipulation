@@ -18,6 +18,6 @@ controller_list:
       []
 initial:  # Define initial robot poses.
   - group: manipulator
-    pose: ready
+    pose: stow
   - group: rail
     pose: left
