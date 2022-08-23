@@ -1,12 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(my_robot_functions_python)
 
-## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
-
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
 find_package(catkin REQUIRED
   rospy
   std_msgs
@@ -15,23 +9,11 @@ find_package(catkin REQUIRED
   actionlib_msgs
   actionlib
   my_robot_interfaces
+  my_robot_ai
 )
 
-
-catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES my_robot_functions_python
-#  CATKIN_DEPENDS other_catkin_pkg
-#  DEPENDS system_lib
-)
-
-
-## Specify additional locations of header files
-## Your package locations should be listed before other locations
-include_directories(
-# include
-# ${catkin_INCLUDE_DIRS}
-)
+catkin_package()
+include_directories()
 
 
 
