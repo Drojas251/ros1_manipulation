@@ -1,0 +1,27 @@
+<root main_tree_to_execute = "MainTree">
+    <BehaviorTree ID="MainTree">
+        <Sequence>
+            <SetBlackboard output_key="obj_1" value="small" />
+            <SetBlackboard output_key="obj_2" value="medium" />
+            <SetBlackboard output_key="obj_3" value="large" />
+            <SetBlackboard output_key="loc_1" value="yellow" />
+            <SetBlackboard output_key="loc_2" value="red" />
+            <SetBlackboard output_key="loc_3" value="blue" />
+            <SetBlackboard output_key="loc_4" value="green" />
+            <SetBlackboard output_key="loc_5" value="purple" />
+            <Fallback>
+                <Sequence>
+                    <SubTree ID="ExecutePickPlace" target_object="obj_2" target_location="loc_4" />
+                    <SubTree ID="ExecutePickPlace" target_object="obj_3" target_location="loc_1" />
+                    <SubTree ID="ExecutePickPlace" target_object="obj_1" target_location="loc_2" />
+                </Sequence>
+            </Fallback>
+        </Sequence>
+    </BehaviorTree>
+
+    <BehaviorTree ID="ExecutePickPlace">
+        <Sequence name="SetGoal">
+            <PickPlace object_name="{target_object}" location_name="{target_location}" />
+        </Sequence>
+    </BehaviorTree>
+</root>

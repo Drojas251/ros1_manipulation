@@ -8,7 +8,6 @@
 #include <my_robot_interfaces/MoveRailFeedback.h>
 
 #include "behaviortree_cpp_v3/bt_factory.h"
-//#include "my_robot_behavior_trees/move_rail_action.hpp"
 #include "move_rail_action.h"
 
 
@@ -19,25 +18,21 @@ BT::NodeStatus MoveRail::tick() {
     return BT::NodeStatus::FAILURE;
   }
 
-  // Take the goal from the InputPort of the Node
+  // Check input
   double rail_position;
-
-
   if (!getInput<double>("rail_position", rail_position)) {
-    // if I can't get this, there is something wrong with your BT.
-    // For this reason throw an exception instead of returning FAILURE
     throw BT::RuntimeError("missing required input [goal]");
   }
 
   // Reset this flag
   _aborted = false;
 
-  ROS_INFO("Sending goal ");
-
+  // Sending Goal
   my_robot_interfaces::MoveRailGoal msg;
   msg.position = rail_position;
 
   _client.sendGoal(msg);
+  ROS_INFO("Goal Sent");
 
   while (!_aborted && !_client.waitForResult(ros::Duration(0.02))) {
     // polling at 50 Hz. No big deal in terms of CPU
@@ -45,7 +40,6 @@ BT::NodeStatus MoveRail::tick() {
 
   if (_aborted) {
     // this happens only if method halt() was invoked
-    //_client.cancelAllGoals();
     ROS_ERROR("MoveRail aborted");
     return BT::NodeStatus::FAILURE;
   }
@@ -55,6 +49,6 @@ BT::NodeStatus MoveRail::tick() {
     return BT::NodeStatus::FAILURE;
   }
 
-  ROS_INFO("Target reached");
+  ROS_INFO("Target rail position reached");
   return BT::NodeStatus::SUCCESS;
 }
