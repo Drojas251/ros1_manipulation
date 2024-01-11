@@ -1,20 +1,18 @@
 #! /usr/bin/env python3
 
-import re
-from tokenize import group
+import os
 import rospy
 import moveit_commander
 import moveit_msgs.msg
 import geometry_msgs.msg
-import math
-
-import actionlib
-from my_robot_interfaces.msg import MoveRailAction, MoveRailFeedback, MoveRailResult
-from my_robot_interfaces.msg import PickPlaceObjAction, PickPlaceObjFeedback, PickPlaceObjResult
-
 import csv
+import actionlib
+from my_robot_interfaces.msg import MoveRailAction, MoveRailResult
+from my_robot_interfaces.msg import PickPlaceObjAction, PickPlaceObjResult
 
 class ManipulationFunctions:
+    FILE_PATH = os.path.dirname(os.path.abspath(__file__))
+
     def __init__(self):
         rospy.init_node('manipulation_functions')
 
@@ -25,17 +23,16 @@ class ManipulationFunctions:
         self.arm = moveit_commander.MoveGroupCommander("manipulator")
         self.rail = moveit_commander.MoveGroupCommander("rail")
         self.rail.set_max_velocity_scaling_factor(1.0)
-        self.rail.set_max_acceleration_scaling_factor(0.2)
+        self.rail.set_max_acceleration_scaling_factor(1.0)
         
         self.arm.allow_replanning(True)
         self.arm.set_max_velocity_scaling_factor(1.0)
         self.arm.set_max_acceleration_scaling_factor(1.0)
 
-        self.ee_link = self.arm.get_end_effector_link()
+        self.flange = self.arm.get_end_effector_link()
         self.ee_group_name = "ee"
 
         # Actions
-
         self.move_rail_action_ = actionlib.SimpleActionServer(
             'move_rail', 
             MoveRailAction, 
@@ -51,13 +48,18 @@ class ManipulationFunctions:
         )
 
         # Database
-        self.obj_database = open('object_database.csv')
-        self.obj_location = open('object_location.csv')
+        objects_path = os.path.join(self.FILE_PATH, "object_database.csv")
+        locations_path = os.path.join(self.FILE_PATH, "object_location.csv")
+
+        self.obj_database = open(objects_path)
+        self.obj_location = open(locations_path)
 
         self.obj_database_data = []
         self.obj_location_data = []   
 
-    # ROBOT ROS ACTIONS
+    ###################
+    # ROS ACTIONS
+    ###################
     def move_rail_(self,goal):
         # goal is a position value (float)
         _result = MoveRailResult()
@@ -78,13 +80,16 @@ class ManipulationFunctions:
         status = self.PickPlaceObj(goal.object_name, goal.location_name)
 
         if(status):
-            self.pick_place_object_action_.set_succeeded()
             _result.status = True
         else:
-            self.pick_place_object_action_.set_aborted()
             _result.status = False
 
+        self.pick_place_object_action_.set_succeeded(_result)
+
+
+    ###################
     # ROBOT FUNCTIONS
+    ###################
     def MoveToPose(self,ee_pose):
 
         status = False
@@ -182,10 +187,10 @@ class ManipulationFunctions:
         self.MoveToPose(obj_pos)
         self.grasp_obj(obj_name)
 
-        # remove
-        obj_pos.position.z = obj_pos.position.z + obj_hieght
-        print(obj_name + ": PICK-UP")
-        self.MoveToPose(obj_pos)
+        # # remove
+        # obj_pos.position.z = obj_pos.position.z + obj_hieght
+        # print(obj_name + ": PICK-UP")
+        # self.MoveToPose(obj_pos)
 
         place_pose = self.find_location_from_database(location_name)
         place_pose.orientation = obj_pos.orientation
@@ -203,21 +208,23 @@ class ManipulationFunctions:
         if(status):
             self.update_obj_database(obj_name, location_name)
 
-        # re-treat
-        place_pose.position.z = obj_pos.position.z + obj_hieght
-        print(obj_name + ": RETREAT")
-        self.MoveToPose(place_pose)
+        # # re-treat
+        # place_pose.position.z = obj_pos.position.z + obj_hieght
+        # print(obj_name + ": RETREAT")
+        # self.MoveToPose(place_pose)
 
         self.MoveArmToTarget("stow")
 
     def grasp_obj(self,obj_name):
         touch_links = self.robot.get_link_names(group=self.ee_group_name)
-        self.scene.attach_box(self.ee_link, obj_name, touch_links=touch_links)
+        self.scene.attach_box(self.flange, obj_name, touch_links=touch_links)
 
     def release_obj(self,obj_name):
-        self.scene.remove_attached_object(self.ee_link, name=obj_name)
+        self.scene.remove_attached_object(self.flange, name=obj_name)
 
-    # PLANNING AND EXECUTION
+    ###################
+    # INTERNAL METHODS
+    ###################
     def _plan_and_execute(self,move_group,function_name):
 
         #Plan
@@ -265,7 +272,9 @@ class ManipulationFunctions:
 
         return success 
 
-    # INTERFACE TO DATABASE
+    ####################
+    # DATABASE INTERFACE
+    ####################
     def initialize_objs(self):
 
         # read csv files
@@ -321,7 +330,6 @@ class ManipulationFunctions:
                         self.scene.add_box(object_name, box_pose, size=(float(obj[1]), float(obj[2]), float(obj[3])))
 
                         break
-
 
         if(name_found == False):
             print("Object Name Not Found")    
@@ -391,23 +399,12 @@ class ManipulationFunctions:
 
         
 if __name__ == "__main__":
-    rospy.loginfo("Grasp Manipulator On ...")
     my_robot = ManipulationFunctions()
 
     rospy.sleep(5.0)
     my_robot.initialize_objs()
+
     print("Robot is Ready")
-
-    # rospy.sleep(5.0)
-
-    my_robot.PickPlaceObj("small","green")
-
-    # rospy.sleep(1.0)
-
-    # my_robot.PickPlaceObj("large","blue")
-
-    print("Done")
-
     rospy.spin()
 
 

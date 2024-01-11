@@ -1,0 +1,10 @@
+<launch>
+
+  <!-- Motion Planners and Controllers -->
+  <include file="$(find my_robot_moveit_config)/launch/launch_my_robot.launch">
+  </include>
+
+  <!-- ROS Actions -->
+  <node name="robot_actions" pkg="my_robot_functions_python" type="robot_actions.py" />
+
+</launch>
