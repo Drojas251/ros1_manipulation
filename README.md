@@ -46,4 +46,15 @@ rosdep install --from-paths src --ignore-src -r -y
 catkin_make
 source devel/setup.bash
 ```
-Now you are ready to run the examples provided in the Examples section. 
+
+Now you are ready to run the examples provided in the Examples section. Once you successfully run the examples, be sure to commit/save your docker container so you do not need to build the environment again. On your local machine run: 
+
+```
+docker ps
+```
+
+This will show the available docker images. Find the docker image titled ros_manip_dev and copy the CONTAINER ID, then commit the image with the following command:
+
+```
+docker commit CONTAINER ID ros_manip_dev
+```
